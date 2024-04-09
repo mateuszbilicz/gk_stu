@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Lab3Ex1</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Mateusz Bilicz s59998 Gr2B">
+    <style>
+        html, body {
+            height: 100%
+        }
+
+        canvas {
+            width: 600px;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+    <p>
+        <input type="checkbox"
+               id="enable-animation"
+               onchange="switchAnim(event)">
+        <label for="enable-animation">
+            Enable animation
+        </label>
+    </p>
+    <script>
+        class AnimatedImage {
+            elems = [];
+            triangleColor = '#0f0';
+            geometryPoints = 3;
+            size = {x: 0, y: 0};
+            position = {x: 0, y: 0};
+            ctx;
+
+            constructor(ctx, triangleColor, geometryPoints, sizeXY, positionXY) {
+                this.triangleColor = triangleColor;
+                this.geometryPoints = geometryPoints;
+                this.size = {
+                    x: sizeXY[0],
+                    y: sizeXY[1]
+                };
+                this.position = {
+                    x: positionXY[0],
+                    y: positionXY[1]
+                };
+                this.ctx = ctx;
+            }
+
+            addGeometry(radius, startAng) {
+                this.elems.push({
+                    type: 'geometry',
+                    x: -1000,
+                    y: -1000,
+                    radius,
+                    ang: startAng
+                });
+            }
+
+            addTriangle(x, y, w, h) {
+                this.elems.push({
+                    type: 'triangle',
+                    x: this.position.x + x,
+                    y: this.position.y + y,
+                    w,
+                    h
+                });
+            }
+
+            addRotatedRect(x, y, w, h) {
+                this.elems.push({
+                    type: 'rotatedRect',
+                    x: this.position.x + x,
+                    y: this.position.y + y,
+                    w,
+                    h,
+                    ang: 0
+                });
+            }
+
+            drawGeometry(x, y, numPoints, radius, ang) {
+                const step = 360 / numPoints,
+                    degToRad = (d) => d * (Math.PI / 180);
+                this.ctx.lineWidth = 1;
+                this.ctx.strokeStyle = '#000';
+                this.ctx.beginPath();
+                for (let i = 0; i < 360; i+= step) {
+                    this.ctx.moveTo(
+                        x + Math.cos(degToRad((i - step)) + ang) * radius,
+                        y + Math.sin(degToRad((i - step)) + ang) * radius
+                    );
+                    this.ctx.lineTo(
+                        x + Math.cos(degToRad(i) + ang) * radius,
+                        y + Math.sin(degToRad(i) + ang) * radius
+                    );
+                    this.ctx.lineTo(x, y);
+                }
+                this.ctx.stroke();
+                this.ctx.closePath();
+            }
+
+            drawTriangle(x, y, w, h) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(
+                    x + w / 2.8,
+                    y + h
+                );
+                this.ctx.lineTo(
+                    x + w / 2,
+                    y
+                );
+                this.ctx.lineTo(
+                    x + w - (w / 2.8),
+                    y + h
+                );
+                this.ctx.closePath();
+                this.ctx.fillStyle = this.triangleColor;
+                this.ctx.fill();
+            }
+
+            drawRotatedRect(x, y, w, h, ang) {
+                this.ctx.save();
+                this.ctx.translate(x, y);
+                this.ctx.rotate(ang);
+                this.ctx.fillStyle = '#f00';
+                this.ctx.fillRect(
+                    -w / 2,
+                    -h / 2,
+                    w,
+                    h
+                );
+                this.ctx.restore();
+            }
+
+            findElems = type => this.elems.filter(elem => elem.type === type);
+
+            draw() {
+                this.elems.forEach(elem => {
+                    switch (elem.type) {
+                        case 'geometry':
+                            this.drawGeometry(
+                                elem.x,
+                                elem.y,
+                                this.geometryPoints,
+                                elem.radius,
+                                elem.ang
+                            );
+                            break;
+                        case 'triangle':
+                            this.drawTriangle(
+                                elem.x,
+                                elem.y,
+                                elem.w,
+                                elem.h
+                            );
+                            break;
+                        case 'rotatedRect': {
+                            this.drawRotatedRect(
+                                elem.x,
+                                elem.y,
+                                elem.w,
+                                elem.h,
+                                elem.ang
+                            );
+                            let geometries = this.findElems('geometry').slice(0, 2);
+                            if (!geometries[0]) return;
+                            geometries[0].x = elem.x + Math.cos(elem.ang) * (elem.w / 2);
+                            geometries[0].y = elem.y + Math.sin(elem.ang) * (elem.w / 2);
+                            if (!geometries[1]) return;
+                            geometries[1].x = elem.x + Math.cos(elem.ang + Math.PI) * (elem.w / 2);
+                            geometries[1].y = elem.y + Math.sin(elem.ang + Math.PI) * (elem.w / 2);
+                        }
+                    }
+                });
+            }
+
+            animate() {
+                this.elems = this.elems.map(elem => {
+                    if (elem.type == 'geometry') {
+                        elem.ang += 0.01;
+                        if (elem.ang >= 360)
+                            elem.ang = 360;
+                    } else if (elem.type === 'rotatedRect') {
+                        elem.ang = 0.3 * Math.sin(Date.now() / 1000);
+                    }
+                    return elem;
+                });
+            }
+
+        }
+
+        function createFigure(ctx, x, y, w, h, triangleColor, geometryPoints) {
+            let elem = new AnimatedImage(
+                ctx,
+                triangleColor,
+                geometryPoints,
+                [w, h],
+                [x, y]
+            );
+            elem.addRotatedRect(
+                w / 2,
+                h / 2,
+                w / 2,
+                h / 20
+            );
+            elem.addTriangle(
+                w / 4,
+                h / 2,
+                w / 2,
+                h / 2
+            );
+            elem.addGeometry(
+                w / 8,
+                0
+            );
+            elem.addGeometry(
+                w / 8,
+                0
+            );
+            return elem;
+        }
+
+        let enableAnimations = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            let toDraw = [],
+                canvas = document.querySelector('canvas'),
+                ctx = canvas.getContext('2d')
+            canvas.width = canvas.height = 600;
+
+            toDraw = [
+                createFigure(
+                    ctx,
+                    0,
+                    0,
+                    300,
+                    300,
+                    '#f0f',
+                    15
+                ),
+                createFigure(
+                    ctx,
+                    350,
+                    0,
+                    250,
+                    200,
+                    '#0f0',
+                    15
+                ),
+                createFigure(
+                    ctx,
+                    100,
+                    100,
+                    500,
+                    500,
+                    '#00f',
+                    15
+                ),
+            ];
+
+            let render = () => {
+                ctx.clearRect(
+                    0,
+                    0,
+                    600,
+                    600
+                );
+                toDraw.forEach(elem => {
+                    elem.draw();
+                    if (enableAnimations)
+                        elem.animate();
+                });
+                requestAnimationFrame(render);
+            }
+
+            render();
+        });
+
+        function switchAnim(ev) {
+            enableAnimations = ev.target.checked;
+        }
+
+    </script>
+</body>
+</html>

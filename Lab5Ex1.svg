@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3CDTD SVG 1.1//EN"
+        "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="6in"
+     height="6in"
+     viewBox="0 0 600 600"
+     preserveAspectRatio="xMidYMid">
+    <desc>
+        Author: Mateusz Bilicz s59998 INF NZ Sem4 Gr2B
+    </desc>
+    <g transform="translate(-150, -15) rotate(0 0 0)">
+        <rect width="300"
+              height="30"
+              x="300"
+              y="300"
+              style='fill:red'>
+        </rect>
+    </g>
+    <g transform="translate(150, 295)">
+        <polygon points="70,0 63.94818203498206,28.471565015306016 46.839142445120075,52.020137783417596 21.631189606246323,66.57395614066074 -7.316992428735749,69.61653267577913 -34.999999999999986,60.62177826491071 -56.631189606246316,41.14496766047313 -68.4703320513664,14.553818357243152 -68.47033205136638,-14.553818357243166 -56.63118960624633,-41.144967660473114 -35.00000000000003,-60.62177826491069 -7.316992428735735,-69.61653267577914 21.631189606246306,-66.57395614066075 46.839142445120046,-52.02013778341762 63.94818203498207,-28.471565015306012"
+                style="fill:rgba(0, 150,0,.7);stroke:black;stroke-width:2">
+            <animateTransform attributeName="transform"
+                              attributeType="XML"
+                              type="rotate"
+                              from="0 0 0"
+                              to="360 0 0"
+                              dur="10s"
+                              repeatCount="indefinite"/>
+        </polygon>
+    </g>
+    <g transform="translate(450, 295)">
+        <polygon points="70,0 63.94818203498206,28.471565015306016 46.839142445120075,52.020137783417596 21.631189606246323,66.57395614066074 -7.316992428735749,69.61653267577913 -34.999999999999986,60.62177826491071 -56.631189606246316,41.14496766047313 -68.4703320513664,14.553818357243152 -68.47033205136638,-14.553818357243166 -56.63118960624633,-41.144967660473114 -35.00000000000003,-60.62177826491069 -7.316992428735735,-69.61653267577914 21.631189606246306,-66.57395614066075 46.839142445120046,-52.02013778341762 63.94818203498207,-28.471565015306012"
+                style="fill:rgba(0, 150,0,.7);stroke:black;stroke-width:2">
+            <animateTransform attributeName="transform"
+                              attributeType="XML"
+                              type="rotate"
+                              from="0 0 0"
+                              to="360 0 0"
+                              dur="10s"
+                              repeatCount="indefinite"/>
+        </polygon>
+    </g>
+    <polygon points="300,300 270,570 330,570"
+             style="fill:blue"/>
+</svg>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Zadanie_OpenGL1</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Mateusz Bilicz s59998 Gr2B">
+    <script src="lib/glsim.js"></script>
+    <script>
+
+        let rotateX = 0,
+            rotateY = 0,
+            rotateZ = 0,
+            objectNum = 1,
+            numSides = 15,
+            scale = 1,
+            colors = [[0, 1, 0], [0, 0, 1], [0.34, 0, 0]];
+
+        function square(r, g, b, size = 1) {
+            glColor3f(r, g, b);
+            glBegin(GL_TRIANGLE_FAN);
+            glVertex3f(-0.5, -size / 2, 0);
+            glVertex3f(0.5, -size / 2, 0);
+            glVertex3f(0.5, size / 2, 0);
+            glVertex3f(-0.5, size / 2, 0);
+            glEnd();
+        }
+
+        function triangle(r, g, b, w, h) {
+            glColor3f(r, g, b);
+            glBegin(GL_TRIANGLE_STRIP);
+            glVertex3f(-0.5, 0, -h / 2);
+            glVertex3f(0, -w, h / 2);
+            glVertex3f(0, w, h / 2);
+            glEnd();
+        }
+
+        function pyramidBottom() {
+            glPushMatrix();
+            glRotatef(90, 1, 0, 0);
+            glTranslatef(0, 0, 0);
+            glColor3f(1, 0, 0);
+            glBegin(GL_TRIANGLE_FAN);
+            const sideAng = 360 / numSides;
+            for (let i = 0; i < numSides; i++) {
+                const ang = rad(sideAng * i);
+                glVertex3f(Math.sin(ang) * 0.5, Math.cos(ang) * 0.5, 0.5);
+            }
+            glPopMatrix();
+            glEnd();
+        }
+
+        function corkscrew() {
+            glPushMatrix();
+            glScalef(scale, scale, scale);
+
+            let size = 1 / numSides,
+                sizeAdd = +size,
+                rot = 360 / numSides,
+                numSidesDiv2 = numSides / 2,
+                numSidesPosMin = -numSidesDiv2 / 2;
+            for (let i = 0; i < numSides; i++) {
+                let color = colors[Math.floor(i % colors.length)];
+
+                glPushMatrix();
+                glRotatef(rot * i, 0, 1, 0);
+                glTranslatef(0, numSidesPosMin + Math.pow(size, 2) * numSidesDiv2, 0);
+                square(...color, size);
+                glPopMatrix();
+
+                size += sizeAdd;
+            }
+
+            glPopMatrix();
+        }
+
+        function rad(deg) {
+            return deg * Math.PI / 180;
+        }
+
+        function pyramid() {
+            glPushMatrix();
+            glScalef(scale, scale, scale);
+
+            pyramidBottom();
+
+            // sides
+            const sideAng = 360 / numSides,
+                pyramidSide = 1 / numSides * 1.6,
+                numSidesDoubled = numSides * 2;
+            for (let i = 0; i < numSides; i++) {
+                const color = colors[Math.floor(i % colors.length)],
+                    ang = sideAng * i + numSidesDoubled;
+
+                glPushMatrix();
+                glRotated(ang, 0, 0, 1);
+                glTranslatef(0.5, 0, 0);
+                triangle(...color, pyramidSide, 1);
+                glPopMatrix();
+            }
+
+            glPopMatrix();
+        }
+
+        function display() {
+
+            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glLoadIdentity();
+            glRotatef(rotateZ, 0, 0, 1);
+            glRotatef(rotateY, 0, 1, 0);
+            glRotatef(rotateX, 1, 0, 0);
+
+            if (objectNum == 1) {
+                corkscrew();
+            } else {
+                pyramid();
+            }
+
+        }
+
+        function initGL() {
+            glMatrixMode(GL_PROJECTION);
+            glOrtho(-1, 1, -1, 1, -1, 1);
+            glMatrixMode(GL_MODELVIEW);
+            glEnable(GL_DEPTH_TEST);
+            glClearColor(0, 0, 0, 1);
+        }
+
+        function doKeyDown(evt) {
+            let key = evt.keyCode;
+            switch(key) {
+                case 37: rotateY -= 15; break;
+                case 39: rotateY += 15; break;
+                case 40: rotateX += 15; break;
+                case 38: rotateX -= 15; break;
+                case 33: rotateZ += 15; break;
+                case 34: rotateZ -= 15; break;
+                case 36: rotateX = rotateY = rotateZ = 0; break;
+                case 35: scale = 1; break;
+                case 49: objectNum = 1; break;
+                case 50: objectNum = 2; break;
+            }
+            if (
+                (key >=34 && key <= 40)
+                || key == 49
+                || key == 50
+            ) {
+                evt.preventDefault();
+            }
+            display();
+        }
+
+        function init() {
+            try {
+                glsimUse("glcanvas");
+            }
+            catch (e) {
+                document.getElementById("canvas-holder").innerHTML =
+                    "Sorry, an error occured:<br>" + e;
+                return;
+            }
+            document.addEventListener('keydown', doKeyDown);
+            document.addEventListener('wheel', ev => {
+                scale += ev.deltaY / 1000;
+                if (scale < 0.1) scale = 0.1;
+                if (scale > 1) scale = 1;
+                display();
+            });
+            initGL();
+            display();
+        }
+
+    </script>
+
+</head>
+
+<body onload="init()">
+<noscript>
+    <p><b>JavaScript is required</b></p>
+</noscript>
+
+<div id="canvas-holder">
+    <canvas id="glcanvas" width="500" height="500"></canvas>
+</div>
+
+<table border="1" style="border-collapse: collapse">
+    <caption>
+        <h4 style="margin-bottom: .1rem">Shortcuts</h4>
+    </caption>
+    <tr>
+        <th>Key</th><th>Description</th>
+    </tr>
+    <tr>
+        <td>MouseScrollUp</td><td>Scale -= deltaY/1000</td>
+    </tr>
+    <tr>
+        <td>MouseScrollDown</td><td>Scale += deltaY/1000</td>
+    </tr>
+    <tr>
+        <td>1</td><td>Figure 1</td>
+    </tr>
+    <tr>
+        <td>2</td><td>Figure 2</td>
+    </tr>
+    <tr>
+        <td>Arrow Up/Down</td><td>Rotate X</td>
+    </tr>
+    <tr>
+        <td>Arrow Left/Right</td><td>Rotate Y</td>
+    </tr>
+    <tr>
+        <td>Page Up/Down</td><td>Rotate Z</td>
+    </tr>
+    <tr>
+        <td>Home</td><td>Reset rotation</td>
+    </tr>
+    <tr>
+        <td>End</td><td>Reset scale to 1</td>
+    </tr>
+</table>
+
+</body>
+</html>

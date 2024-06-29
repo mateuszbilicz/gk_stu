@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab8Ex1</title>
+    <meta name="author" content="Mateusz Bilicz s59998 Gr2B">
+    <link rel="stylesheet" href="./demo.css">
+    <style>
+        #texcanvas {
+            background-image: url("textures/brick.jpg");
+            background-size: 100px 100px;
+        }
+    </style>
+    <script src="./script/demo-core.js"></script>
+    <script src="./script/glsim.js"></script>
+    <script src="./script/basic-object-models-IFS.js"></script>
+    <script src="./script/slider-canvas.js"></script>
+    <script src="./Lab8Ex1.js"></script>
+</head>
+<body>
+<div id="content">
+    <h3 id="headline">Lab8Ex1</h3>
+    <table border="0" cellspacing="0" cellpadding="8">
+        <tr>
+            <td>
+                <div id="canvas-holder">
+                    <canvas id="texcanvas" width="300" height="300"></canvas>
+                </div>
+            </td>
+            <td>
+                <canvas id="maincanvas" width="300" height="300"></canvas>
+            </td>
+        </tr>
+        <tr align="center">
+            <td colspan="2">
+                <b>Texture:</b>
+                <select id="texture">
+                    <option value="0">Brick</option>
+                    <option value="1">Clouds</option>
+                    <option value="2">Earth</option>
+                </select>
+                <button id="reset" style="margin-left:40px">Reset</button>
+            </td>
+        </tr>
+        <tr align=center>
+            <td>
+                <canvas id="scScale" width="280" height="50"></canvas>
+            </td>
+            <td>
+                <canvas id="scTransX" width="280" height="50"></canvas>
+            </td>
+        </tr>
+        <tr align=center>
+            <td>
+                <canvas id="scRotate" width="280" height="50"></canvas>
+            </td>
+            <td>
+                <canvas id="scTransY" width="280" height="50"></canvas>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
+

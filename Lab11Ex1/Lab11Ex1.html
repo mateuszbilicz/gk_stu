@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab11Ex1</title>
+    <meta content="Mateusz Bilicz s59998 Gr2B" name="author">
+    <style> html, body {
+        margin: 0;
+        overflow: hidden;
+        font-family: Roboto, sans-serif;
+        font-size: 12px;
+    }
+
+    canvas {
+        display: block;
+    }
+
+    table {
+        background: #333;
+        color: #fff;
+        border-collapse: collapse;
+        position: fixed;
+        right: 0;
+        top: 0;
+        opacity: .3;
+    }
+
+    table:hover {
+        opacity: 1;
+    }
+
+    th {
+        font-size: 14px;
+    }
+
+    td, th {
+        border: solid 1px #fff;
+        padding: .5rem;
+    }
+
+    td[colspan="2"] {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    tr td:first-of-type:not(td[colspan="2"]) {
+        text-align: center;
+        color: #aaf;
+    }
+
+    .author {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        padding: .25rem;
+        color: #aef;
+        opacity: .3;
+    }
+
+    .author:hover {
+        opacity: 1;
+    }
+    </style>
+    <script id="vshader-source" type="x-shader/x-vertex">
+         attribute vec2 a_coords;
+         attribute vec3 a_color;
+         uniform float u_width;
+         uniform float u_height;
+         uniform float u_pointSize;
+         varying lowp vec3 v_color;
+         void main() {
+             float x,y;
+             x = a_coords.x/u_width * 2.0 - 1.0;
+             y = 1.0 - a_coords.y/u_height * 2.0;
+             gl_Position = vec4(x, y, 0.0, 1.0);
+             gl_PointSize = u_pointSize;
+             v_color = a_color;
+         }
+    </script>
+    <script id="fshader-source" type="x-shader/x-fragment">
+         #ifdef GL_FRAGMENT_PRECISION_HIGH
+            precision highp float;
+         #else
+            precision mediump float;
+         #endif
+         uniform int u_style;
+         uniform float u_alpha;
+         varying lowp vec3 v_color;
+         void main() {
+             if (u_style == 1) {
+                 float dist = distance( vec2(0.5), gl_PointCoord );
+                 if (dist > 0.5) {
+                    discard;
+                 }
+             }
+             if (u_style == 2) {
+                 float dist = distance( vec2(0.5), gl_PointCoord );
+                 if (dist > 0.55) {
+                    discard;
+                 }
+             }
+             gl_FragColor = vec4(v_color, u_alpha);
+         }
+    </script>
+    <script src="Lab11Ex1.js"></script>
+</head>
+<body onload="init()">
+<noscript>Sorry, this page requires JavaScript.</noscript>
+<table>
+    <tr>
+        <th>Key</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td colspan="2">Shape</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>Circles</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Rounded rectangles</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Rectangles</td>
+    </tr>
+    <tr>
+        <td colspan="2">Color</td>
+    </tr>
+    <tr>
+        <td>C</td>
+        <td>Enable/Disable colors</td>
+    </tr>
+    <tr>
+        <td>V</td>
+        <td>Enable/Disable custom color</td>
+    </tr>
+    <tr>
+        <td>
+            ALPHA
+        </td>
+        <td>
+            <input type="range"
+                    min="0.1" step="0.05" max="1"
+                   value="1"
+                    id="alphaInput">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="colorChoice">
+                Color:
+            </label>
+            <input type="color"
+                   id="colorChoice">
+        </td>
+        <td id="customColorEnabled">DISABLED</td>
+    </tr>
+    <tr>
+        <td colspan="2">Control</td>
+    </tr>
+    <tr>
+        <td>SPACE</td>
+        <td>Pause/Run</td>
+    </tr>
+</table>
+<div class="author">
+    Mateusz Bilicz s59998 INF NZ Sem4 Gr2B
+</div>
+</body>
+</html>

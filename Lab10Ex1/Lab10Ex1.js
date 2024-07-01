@@ -60,7 +60,6 @@ function cone(radius, height, rotate, translateY, material) {
         cone = new THREE.Mesh(geometry, material);
     cone.rotateZ(rotate);
     cone.position.y = translateY;
-    // geometry.translate(0, translateY, 0);
     scene.add(cone);
     cone.castShadow = true;
     cone.receiveShadow = true;

@@ -1,9 +1,18 @@
 "use strict";
-let canvas, gl, u_width_loc, u_height_loc, u_pointSize_loc, a_coords_loc, a_coords_buffer, a_color_loc, a_color_buffer,
-    POINT_COUNT = 30, POINT_SIZE = 64, positions = new Float32Array(2 * POINT_COUNT),
-    velocities = new Float32Array(2 * POINT_COUNT), colors = new Float32Array(3 * POINT_COUNT), isRunning = true,
-    u_style_loc, useCustomColor = false, customColor = [1, 1, 1], u_alpha_loc,
-    useColors = true, style = 0;
+let canvas, gl,
+    u_width_loc, u_height_loc, u_pointSize_loc, a_coords_loc, a_coords_buffer, a_color_loc, a_color_buffer,
+    POINT_COUNT = 30,
+    POINT_SIZE = 64,
+    positions = new Float32Array(2 * POINT_COUNT),
+    velocities = new Float32Array(2 * POINT_COUNT),
+    colors = new Float32Array(3 * POINT_COUNT),
+    isRunning = true,
+    u_style_loc,
+    useCustomColor = false,
+    customColor = [1, 1, 1],
+    u_alpha_loc,
+    useColors = true,
+    style = 0;
 
 function render() {
     gl.clear(gl.COLOR_BUFFER_BIT);
